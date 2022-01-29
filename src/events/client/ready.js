@@ -1,6 +1,8 @@
 const Event = require('../../structures/Event');
 const cron = require('node-cron');
 const { DateTime } = require("luxon");
+const { bosses } = require ('../../../models/boss_schedule')
+
 
 module.exports = class extends Event {
     constructor(client){
@@ -10,27 +12,42 @@ module.exports = class extends Event {
     }
 
     run =  () => {
-        console.log(`Bot logged in as ${this.client.user.username} in ${this.client.guilds.cache.size} servers`)
+        //Bot Login
         this.client.registerCommands()
+        console.log(`Bot logged in as ${this.client.user.username} in ${this.client.guilds.cache.size} servers`)
 
-        var test = '19_27'
+        //Bot Sets Schedule and Timezone
+        const channel = this.client.channels.cache.find(channel => channel.id === process.env.BT_CHANNEL)
 
-        var time = DateTime.now().setZone("UTC-3");
-        var hour = time.c.hour;
-        var minute = time.c.minute;
-        var finalHour = `${hour}_${minute}`
+        const DAY = DateTime.now().weekdayLong.toLocaleLowerCase() //GET WEEK DAY
 
-        const day = DateTime.now().weekday
-        console.log(day)
-        console.log(finalHour)
+        const actualHour = DateTime.now().setZone(process.env.TIMEZONE).c.hour
+        const actualMinute = DateTime.now().setZone(process.env.TIMEZONE).c.minute
+        
+        const hour_15M = DateTime.now().setZone(process.env.TIMEZONE).plus({ minutes: 15 }).c.hour
+        const minute_15M = DateTime.now().setZone(process.env.TIMEZONE).plus({ minutes: 15 }).c.minute
+  
+        const hour_10M = DateTime.now().setZone(process.env.TIMEZONE).plus({ minutes: 10 }).c.hour
+        const minute_10M = DateTime.now().setZone(process.env.TIMEZONE).plus({ minutes: 10 }).c.minute
 
-        //console.log(time)
+        const hour_5M = DateTime.now().setZone(process.env.TIMEZONE).plus({ minutes: 5 }).c.hour
+        const minute_5M = DateTime.now().setZone(process.env.TIMEZONE).plus({ minutes: 5 }).c.minute
 
-        if(finalHour === test) console.log('pintao')
-        // cron.schedule('* * * * * *', () => {
-        //     var time = DateTime.now().setZone("America/New_York")
-        //     console.log(time)
-        //   });
+        const HOUR = `${actualHour}:${actualMinute}` //GET ACTUAL HOUR
+        const FUTURE_15M = `${hour_15M}:${minute_15M}` //GET 15MINUTES BEFORE BOSS
+        const FUTURE_10M = `${hour_10M}:${minute_10M}` //GET 10MINUTES BEFORE BOSS
+        const FUTURE_5M = `${hour_5M}:${minute_5M}` //GET 05MINUTES BEFORE BOSS
+        
+        function createHours(){
+
+        }
+
+ 
+        //Bot starts counting timing
+        // for(var i = 0; i < bosses[day].length; i++){
+        //     console.log('Jade Campeã ♥')
+        // }
+
 
     }
 }
